@@ -1,0 +1,67 @@
+program => extern_list decl_list
+        => decl_list
+
+extern_list => extern extern_list
+            => extern
+
+extern => "extern" type_spec IDENT "(" params ")" ";"
+
+decl_list => decl decl_list
+          => decl
+
+decl => var_decl
+     => fun_decl
+
+var_decl => var_type IDENT ";"
+
+type_spec => "void"
+          => var_type
+
+vartype => "int"
+        => "float"
+        => "bool"
+
+fun_decl => type_spec IDENT "(" params ")" block
+         => type_spec IDENT "(" ")" block
+
+params => param_list
+       => "void"
+
+param_list => param "," param_list
+           => param
+
+param => var_type IDENT
+
+block => "{" local_decls stmt_list "}"
+      => "{" stmt_list "}"
+      => "{" local_decls "}"
+      => "{" "}"
+
+local_decls => local_decl local_decls
+            => local_decl
+
+stmt_list => stmt stmt_list
+          => stmt
+
+stmt => expr_stmt
+     => block
+     => if_stmt
+     => while_stmt
+     => return_stmt
+
+expr_stmt => expr ";"
+          => ";"
+
+while_stmt => "while "(" expr ")" stmt
+
+if_stmt => "if" "(" expr ")" block "else" block
+        => "if" "(" expr ")" block
+
+return_stmt => "return" ";"
+            => "return" expr ";"
+
+
+expr => IDENT "=" expr
+     => rval
+
+rval =>
