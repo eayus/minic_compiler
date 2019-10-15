@@ -3,6 +3,10 @@
 #include <boost/iostreams/device/mapped_file.hpp>
 #include "lexer.hpp"
 
+#include "ast/expr.hpp"
+#include "ast/statement.hpp"
+#include "ast/declaration.hpp"
+
 int main() {
 	boost::iostreams::mapped_file_source file("test.txt");
 
