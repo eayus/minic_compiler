@@ -50,7 +50,7 @@ namespace lexer {
 		Token(Type type, std::string_view lexeme);
 		void print();
 
-		const char* type_to_str();
+		static const char* type_to_str(Type type);
 
 		Type type;
 		std::string_view lexeme;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <string>
 
 class ParseException : public std::exception {
 public:

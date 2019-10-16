@@ -1,15 +1,16 @@
 #pragma once
 
-#include "../token.hpp"
+#include "../lexer.hpp"
 #include <optional>
+
+using namespace lexer;
 
 class TokenStream {
 public:
 	TokenStream() noexcept;
 	Token::Type peek_type(size_t num_ahead) noexcept;
-	Token& next_token() noexcept;
+	const Token& next() noexcept;
 
-private:
-	const std::vector<Token> tokens;
+	std::vector<Token> tokens;
 	size_t index;
 };

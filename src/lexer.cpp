@@ -9,8 +9,8 @@ namespace lexer {
        		type(type), lexeme(lexeme) { }
 
 
-	const char* Token::type_to_str() {
-		switch (this->type) {
+	const char* Token::type_to_str(Type type) {
+		switch (type) {
 			case Token::Type::Int: return "Int";
 			case Token::Type::Bool: return "Bool";
 			case Token::Type::Float: return "Float";
@@ -49,7 +49,7 @@ namespace lexer {
 	}
 
 	void Token::print() {
-		std::cout << "type: \"" << this->type_to_str() << "\", lexeme: \"" << this->lexeme << "\"" << std::endl;
+		std::cout << "type: \"" << Token::type_to_str(this->type) << "\", lexeme: \"" << this->lexeme << "\"" << std::endl;
 	}
 
 

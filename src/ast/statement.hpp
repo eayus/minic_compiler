@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <forward_list>
 #include "expr.hpp"
 
 namespace ast::declaration {
@@ -15,8 +16,8 @@ namespace ast::statement {
 	};
 
 	struct Block : public Statement {
-		std::vector<std::unique_ptr<VarDecl>> var_decls;
-		std::vector<std::unique_ptr<Statement>> statements;
+		std::forward_list<std::unique_ptr<VarDecl>> var_decls;
+		std::forward_list<std::unique_ptr<Statement>> statements;
 	};
 
 	struct IfElse : public Statement {
