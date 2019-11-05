@@ -115,12 +115,14 @@ namespace ast::declaration {
 			it++;
 
 			if (it == this->params.end()) {
-				param->print_tree(indent_str, true);
+				param->print_tree(indent_str, false);
 				break;
 			} else {
 				param->print_tree(indent_str, false);
 			}
 		}
+
+		this->body->print_tree(indent_str, true);
 	}
 	
 }

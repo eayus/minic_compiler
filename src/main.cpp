@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/utility/string_ref.hpp>
 #include "lexer.hpp"
 
 #include "ast/expr.hpp"
@@ -12,10 +13,10 @@
 #include <memory>
 
 int main() {
-	boost::iostreams::mapped_file_source file("test.txt");
+	boost::iostreams::mapped_file_source file("tests/fibonacci/fibonacci.c");
 
 
-	lexer::Lexer l(std::string_view(file.data(), file.size()));
+	lexer::Lexer l(boost::string_ref(file.data(), file.size()));
 
 	//std::vector<lexer::Token> tokens;
 	TokenStream ts;

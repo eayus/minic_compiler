@@ -2,4 +2,9 @@ extern int print_int(int lol, bool y);
 
 int fibonacci(int n)
 {
+	int x;
+	int y;
+	bool z;
+
+	while (true) { x + 3; }
 }

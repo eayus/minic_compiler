@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string_view>
 #include <vector>
+#include <boost/utility/string_ref.hpp>
 
 namespace lexer {
 
@@ -29,6 +29,10 @@ namespace lexer {
 			RParen,
 			SemiColon,
 			Comma,
+			Minus,
+			Plus,
+			Asterisk,
+			Percent,
 			BitAnd,
 			LogicAnd,
 			BitOr,
@@ -47,19 +51,19 @@ namespace lexer {
 
 
 
-		Token(Type type, std::string_view lexeme);
+		Token(Type type, boost::string_ref lexeme);
 		void print();
 
 		static const char* type_to_str(Type type);
 
 		Type type;
-		std::string_view lexeme;
+		boost::string_ref lexeme;
 	};
 
 
 	class Lexer {
 	public:
-		Lexer(std::string_view str);
+		Lexer(boost::string_ref str);
 		void lex(std::vector<Token>& tokens);
 
 	private:
@@ -67,7 +71,7 @@ namespace lexer {
 	
 	private:
 		size_t i;
-		std::string_view str;
+		boost::string_ref str;
 		std::vector<Token> tokens;
 	};
 }

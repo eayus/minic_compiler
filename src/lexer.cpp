@@ -2,10 +2,11 @@
 
 #include <cctype>
 #include <iostream>
+#include <boost/utility/string_ref.hpp>
 
 namespace lexer {
 
-	Token::Token(Token::Type type, std::string_view lexeme) :
+	Token::Token(Token::Type type, boost::string_ref lexeme) :
        		type(type), lexeme(lexeme) { }
 
 
@@ -43,6 +44,10 @@ namespace lexer {
 			case Token::Type::Greater: return "Greater";
 			case Token::Type::GreaterEqual: return "GreaterEqual";
 			case Token::Type::Divide: return "Divide";
+			case Token::Type::Minus: return "Minus";
+			case Token::Type::Plus: return "Plus";
+			case Token::Type::Asterisk: return "Asterisk";
+			case Token::Type::Percent: return "Percent";
 			case Token::Type::EndOfInput: return "EndOfInput";
 			case Token::Type::Invalid: return "Invalid";
 		}
@@ -56,7 +61,7 @@ namespace lexer {
 
 
 
-	Lexer::Lexer(std::string_view str) :
+	Lexer::Lexer(boost::string_ref str) :
 		i(0), str(str) { }
 
 	void Lexer::lex(std::vector<Token>& tokens) {
@@ -80,7 +85,7 @@ namespace lexer {
 			while (std::isalnum(str[i]) || str[i] == '_') i++;
 
 
-			std::string_view identifier = str.substr(token_start, i - token_start);
+			boost::string_ref identifier = str.substr(token_start, i - token_start);
 
 			if (identifier == "int")    return Token(Token::Type::Int,     identifier);
 			if (identifier == "bool")   return Token(Token::Type::Bool,    identifier);
@@ -108,6 +113,10 @@ namespace lexer {
 			case ')': return Token(Token::Type::RParen,    str.substr(i++, 1));
 			case ';': return Token(Token::Type::SemiColon, str.substr(i++, 1));
 			case ',': return Token(Token::Type::Comma,     str.substr(i++, 1));
+			case '-': return Token(Token::Type::Minus,     str.substr(i++, 1));
+			case '+': return Token(Token::Type::Plus,      str.substr(i++, 1));
+			case '*': return Token(Token::Type::Asterisk,  str.substr(i++, 1));
+			case '%': return Token(Token::Type::Percent,   str.substr(i++, 1));
 			default: break;
 		}
 

@@ -1,4 +1,7 @@
 #include "expr.hpp"
+#include "../lexer.hpp"
+#include <iostream>
+#include <iomanip>
 
 namespace ast::expr {
 
@@ -11,9 +14,8 @@ namespace ast::expr {
 		first_operand(std::move(first_operand)),
 		second_operand(std::move(second_operand)) { }
 
-	AssignExpr::AssignExpr(std::string&& name, std::unique_ptr<Expr> expr) noexcept :
-		name(std::move(name)),
-		expr(std::move(expr)) { }
+	IdentifierExpr::IdentifierExpr(std::string&& name) noexcept :
+		name(std::move(name)) { }
 
 	IntExpr::IntExpr(int value) noexcept :
 		value(value) { }
@@ -24,5 +26,145 @@ namespace ast::expr {
 	BoolExpr::BoolExpr(bool value) noexcept :
 		value(value) { }
 
+	unsigned int binary_op_precedence(BinaryOp op) {
+		switch (op) {
+			case BinaryOp::Multiply: return 40;
+			case BinaryOp::Divide: return 40;
+			case BinaryOp::Modulo: return 40;
+			case BinaryOp::Plus: return 30;
+			case BinaryOp::Minus: return 30;
+			case BinaryOp::Less: return 20;
+			case BinaryOp::LessEqual: return 20;
+			case BinaryOp::Greater: return 20;
+			case BinaryOp::GreaterEqual: return 20;
+			case BinaryOp::Equals: return 10;
+			case BinaryOp::NotEquals: return 10;
+			case BinaryOp::And: return 5;
+			case BinaryOp::Or: return 0;
+		}
+	}
+
+	boost::optional<BinaryOp> binary_op_from_token_type(Token::Type type) {
+		switch (type) {
+			case Token::Type::Asterisk: return BinaryOp::Multiply;
+			case Token::Type::Divide: return BinaryOp::Divide;
+			case Token::Type::Percent: return BinaryOp::Modulo;
+			case Token::Type::Plus: return BinaryOp::Plus;
+			case Token::Type::Minus: return BinaryOp::Minus;
+			case Token::Type::Less: return BinaryOp::Less;
+			case Token::Type::LessEqual: return BinaryOp::LessEqual;
+			case Token::Type::Greater: return BinaryOp::Greater;
+			case Token::Type::GreaterEqual: return BinaryOp::GreaterEqual;
+			case Token::Type::Equals: return BinaryOp::Equals;
+			case Token::Type::NotEqual: return BinaryOp::NotEquals;
+			case Token::Type::LogicAnd: return BinaryOp::And;
+			case Token::Type::LogicOr: return BinaryOp::Or;
+			default: return boost::none;
+		}
+	}
+
+	const char* binary_op_to_str(BinaryOp op) {
+		switch (op) {
+			case BinaryOp::Multiply: return "multiply";
+			case BinaryOp::Divide: return "divide";
+			case BinaryOp::Modulo: return "modulo";
+			case BinaryOp::Plus: return "plus";
+			case BinaryOp::Minus: return "minus";
+			case BinaryOp::Less: return "less";
+			case BinaryOp::LessEqual: return "less_or_equal";
+			case BinaryOp::Greater: return "greater";
+			case BinaryOp::GreaterEqual: return "greater_or_equal";
+			case BinaryOp::Equals: return "equal";
+			case BinaryOp::NotEquals: return "not_equal";
+			case BinaryOp::And: return "and";
+			case BinaryOp::Or: return "or";
+		}
+	}
+
+	const char* unary_op_to_str(UnaryOp op) {
+		switch (op) {
+			case UnaryOp::Not: return "not";
+			case UnaryOp::Negate: return "negate";
+		}
+	}
+
+	void UnaryExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- unary_expr"
+			<< " { op: "
+			<< unary_op_to_str(this->op)
+			<< " }\n";
+
+		indent_str += "   ";
+		this->operand->print_tree(indent_str, true);
+	}
+
+	void BinaryExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- binary_expr"
+			<< " { op: "
+			<< binary_op_to_str(this->op)
+			<< " }\n";
+
+		indent_str += "   ";
+		this->first_operand->print_tree(indent_str, true);
+		this->second_operand->print_tree(indent_str, true);
+	}
+	
+	void AssignExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- assign_expr"
+			<< " { name: "
+			<< this->name
+			<< " }\n";
+
+		indent_str += "   ";
+		this->expr->print_tree(indent_str, true);
+	}
+
+	void IdentifierExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- variable"
+			<< " { name: "
+			<< this->name
+			<< " }\n";
+	}
+
+	void FuncCallExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- func_call"
+			<< " { func_name: "
+			<< this->func_name
+			<< " }\n";
+
+		indent_str += "   ";
+
+		for (auto it = this->params.begin(); it != this->params.end(); it++) {
+			(*it)->print_tree(indent_str, false);
+		}
+	}
+
+	void IntExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- int"
+			<< " { value: "
+			<< this->value
+			<< " }\n";
+	}
+	void FloatExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- float"
+			<< " { value: "
+			<< this->value
+			<< " }\n";
+	}
+	void BoolExpr::print_tree(std::string indent_str, bool is_last) const {
+		std::cout << indent_str
+			<< "+- bool"
+			<< " { value: "
+			<< std::boolalpha
+			<< this->value
+			<< " }\n";
+	}
 }
 
