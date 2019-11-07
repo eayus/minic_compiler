@@ -27,6 +27,7 @@ namespace ast::declaration {
 
 		auto it = this->externs.begin();
 		while (true) {
+			if (it == this->externs.end()) break;
 			auto& ext = *it;
 
 			it++;
@@ -41,6 +42,7 @@ namespace ast::declaration {
 
 		auto it2 = this->decls.begin();
 		while (true) {
+			if (it2 == this->decls.end()) break;
 			auto& decl = *it2;
 
 			it2++;
@@ -68,6 +70,7 @@ namespace ast::declaration {
 
 		auto it = this->params.begin();
 		while (true) {
+			if (it == this->params.end()) break;
 			auto& param = *it;
 
 			it++;
@@ -110,6 +113,7 @@ namespace ast::declaration {
 
 		auto it = this->params.begin();
 		while (true) {
+			if (it == this->params.end()) break;
 			auto& param = *it;
 
 			it++;

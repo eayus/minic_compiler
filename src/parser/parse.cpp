@@ -216,7 +216,7 @@ std::unique_ptr<Statement> parse_while_stmt(TokenStream& ts) {
 	consume(ts, Token::Type::LParen);
 	stmt->cond = parse_expr(ts);
 	consume(ts, Token::Type::RParen);
-	stmt->body = parse_block(ts);
+	stmt->body = parse_stmt(ts);
 
 	return stmt;
 }
@@ -407,7 +407,7 @@ std::unique_ptr<Expr> parse_primary_expr(TokenStream& ts) {
 		case Token::Type::LParen: return parse_parens_expr(ts);
 		case Token::Type::Identifier: {
 				switch (ts.peek_type(2)) {
-					case Token::Type::Equals: return parse_assign_expr(ts);
+					case Token::Type::Assign: return parse_assign_expr(ts);
 					case Token::Type::LParen: return parse_func_call_expr(ts);
 					default: return parse_identifier_expr(ts);
 				}
@@ -459,7 +459,7 @@ std::unique_ptr<Expr> parse_assign_expr(TokenStream& ts) {
 	auto assign_expr = std::make_unique<AssignExpr>();
 
 	assign_expr->name = parse_identifier(ts);
-	consume(ts, Token::Type::Equals);
+	consume(ts, Token::Type::Assign);
 	assign_expr->expr = parse_expr(ts);
 
 	return assign_expr;

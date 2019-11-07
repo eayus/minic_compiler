@@ -12,8 +12,10 @@
 #include "parser/token_stream.hpp"
 #include <memory>
 
-int main() {
-	boost::iostreams::mapped_file_source file("tests/fibonacci/fibonacci.c");
+int main(int argc, char** argv) {
+	char* filepath = argv[1];
+	std::cout << "filepath: " << filepath << std::endl;
+	boost::iostreams::mapped_file_source file(filepath);
 
 
 	lexer::Lexer l(boost::string_ref(file.data(), file.size()));

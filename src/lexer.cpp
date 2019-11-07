@@ -127,10 +127,10 @@ namespace lexer {
 		if (str[i] == '=') {
 			if (str[i + 1] == '=') {
 				i += 2;
-				return Token(Token::Type::Assign, str.substr(i - 2, 2));
+				return Token(Token::Type::Equals, str.substr(i - 2, 2));
 			} else {
 				i += 1;
-				return Token(Token::Type::Equals, str.substr(i - 1, 1));
+				return Token(Token::Type::Assign, str.substr(i - 1, 1));
 			}
 		}
 
