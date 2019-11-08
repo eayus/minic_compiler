@@ -27,6 +27,7 @@ namespace ast::declaration {
 		std::string name;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	class Declaration : public ASTNode {
@@ -38,6 +39,7 @@ namespace ast::declaration {
 		std::forward_list<std::unique_ptr<Param>> params;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct VarDecl : public Declaration {
@@ -45,6 +47,7 @@ namespace ast::declaration {
 		std::string name;
 		
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct FuncDecl : public Declaration {
@@ -54,6 +57,7 @@ namespace ast::declaration {
 		std::unique_ptr<Block> body;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct Program : public ASTNode {
@@ -61,6 +65,7 @@ namespace ast::declaration {
 		std::forward_list<std::unique_ptr<Declaration>> decls;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	const char* return_type_to_str(ReturnType rt);

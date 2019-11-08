@@ -1,4 +1,5 @@
 #include "expr.hpp"
+#include "visitor.hpp"
 #include "../lexer.hpp"
 #include <iostream>
 #include <iomanip>
@@ -166,5 +167,38 @@ namespace ast::expr {
 			<< this->value
 			<< " }\n";
 	}
+
+	void UnaryExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_unary_expr(*this);
+	}
+
+	void BinaryExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_binary_expr(*this);
+	}
+
+	void AssignExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_assign_expr(*this);
+	}
+
+	void IdentifierExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_identifier_expr(*this);
+	}
+
+	void FuncCallExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_func_call_expr(*this);
+	}
+
+	void IntExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_int_expr(*this);
+	}
+
+	void FloatExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_float_expr(*this);
+	}
+
+	void BoolExpr::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_bool_expr(*this);
+	}
+
 }
 

@@ -1,5 +1,6 @@
 #include "declaration.hpp"
 #include <iostream>
+#include "visitor.hpp"
 
 namespace ast::declaration {
 
@@ -18,6 +19,26 @@ namespace ast::declaration {
 			case VarType::Float: return "float";
 			case VarType::Bool: return "bool";
 		}
+	}
+
+	void Program::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_program(*this);
+	}
+
+	void FuncDecl::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_func_decl(*this);
+	}
+
+	void VarDecl::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_var_decl(*this);
+	}
+
+	void ExternDecl::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_extern_decl(*this);
+	}
+
+	void Param::accept_visitor(ASTVisitor& visitor) {
+		//visitor.visit_program(*this);
 	}
 
 	void Program::print_tree(std::string indent_str, bool is_last) const {

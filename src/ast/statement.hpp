@@ -22,6 +22,7 @@ namespace ast::statement {
 		std::forward_list<std::unique_ptr<Statement>> statements;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct IfElse : public Statement {
@@ -30,6 +31,7 @@ namespace ast::statement {
 		std::unique_ptr<Block> if_false; // potentially nullptr
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct While : public Statement {
@@ -37,18 +39,21 @@ namespace ast::statement {
 		std::unique_ptr<Statement> body;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct Return : public Statement {
 		std::unique_ptr<Expr> return_val; // potentially nullptr
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct ExprStmt : public Statement {
 		std::unique_ptr<Expr> expr; //potentially nullptr
 
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 }

@@ -1,4 +1,8 @@
 extern int print_int(int lol, bool y);
+extern int print_bool(int lol, bool y);
+
+int y;
+float p;
 
 int fibonacci(int n)
 {

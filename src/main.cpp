@@ -12,6 +12,8 @@
 #include "parser/token_stream.hpp"
 #include <memory>
 
+#include "codegen/codegen.hpp"
+
 int main(int argc, char** argv) {
 	char* filepath = argv[1];
 	std::cout << "filepath: " << filepath << std::endl;
@@ -31,7 +33,11 @@ int main(int argc, char** argv) {
 
 	auto prog = parse_program(ts);
 
-	prog->print_tree("", true);
+	//prog->print_tree("", true);
+
+	CodeGenerator cg;
+	prog->accept_visitor(cg);
+	cg.print();
 	
 	file.close();
 }

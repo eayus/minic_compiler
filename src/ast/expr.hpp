@@ -47,6 +47,7 @@ namespace ast::expr {
 	struct UnaryExpr : public Expr {
 		UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		UnaryOp op;
 		std::unique_ptr<Expr> operand;
@@ -55,6 +56,7 @@ namespace ast::expr {
 	struct BinaryExpr : public Expr {
 		BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		BinaryOp op;
 		std::unique_ptr<Expr> first_operand;
@@ -63,6 +65,7 @@ namespace ast::expr {
 
 	struct AssignExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 		std::string name;
 		std::unique_ptr<Expr> expr;
 	};
@@ -70,12 +73,14 @@ namespace ast::expr {
 	struct IdentifierExpr : public Expr {
 		IdentifierExpr(std::string&& name) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		std::string name;
 	};
 
 	struct FuncCallExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 		std::string func_name;
 		std::forward_list<std::unique_ptr<Expr>> params;
 	};
@@ -83,6 +88,7 @@ namespace ast::expr {
 	struct IntExpr : public Expr {
 		IntExpr(int value) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		int value;
 	};
@@ -90,6 +96,7 @@ namespace ast::expr {
 	struct FloatExpr : public Expr {
 		FloatExpr(float value) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		float value;
 	};
@@ -97,6 +104,7 @@ namespace ast::expr {
 	struct BoolExpr : public Expr {
 		BoolExpr(bool value) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
+		void accept_visitor(ASTVisitor& visitor) override;
 
 		bool value;
 	};

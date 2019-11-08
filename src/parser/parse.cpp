@@ -86,6 +86,7 @@ std::unique_ptr<Declaration> parse_decl(TokenStream& ts) {
 
 				func_decl->return_type = static_cast<ReturnType>(var_type);
 				func_decl->params = parse_params(ts);
+				func_decl->name = name;
 				consume(ts, Token::Type::RParen);
 				func_decl->body = parse_block(ts);
 
