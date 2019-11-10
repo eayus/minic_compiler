@@ -25,6 +25,9 @@ public:
 	void visit_block(const Block& block) override;
 	void visit_local_decl(const VarDecl& local_decl) override;
 	void visit_expr_stmt(const ExprStmt& expr_stmt) override;
+	void visit_return_stmt(const Return& ret_stmt) override;
+	void visit_if_else_stmt(const IfElse& if_else_stmt) override;
+	void visit_while_stmt(const While& while_stmt) override;
 	void visit_unary_expr(const UnaryExpr& unary_expr) override;
 	void visit_binary_expr(const BinaryExpr& binary_expr) override;
 	void visit_assign_expr(const AssignExpr& assign_expr) override;
@@ -33,6 +36,8 @@ public:
 	void visit_int_expr(const IntExpr& int_expr) override;
 	void visit_float_expr(const FloatExpr& float_expr) override;
 	void visit_bool_expr(const BoolExpr& bool_expr) override;
+
+	void cg_block(const Block& block);
 
 	llvm::Type* convert_return_type(ReturnType rt);
 	llvm::Type* convert_var_type(VarType vt);
@@ -47,4 +52,5 @@ private:
 
 	llvm::BasicBlock* current_basic_block;
 	llvm::Function* current_function;
+	llvm::Value* current_expr;
 };

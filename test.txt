@@ -4,11 +4,18 @@ extern int print_bool(int lol, bool y);
 int y;
 float p;
 
-int fibonacci(int n)
+int fibonacci(int n, bool m)
 {
 	int x;
 	int y;
 	bool z;
 
+	{
+		x = 3 + 5;
+	}
+	z = false;
+	print_bool(1 + 1, true);
 	while (true) { x + 3; }
+
+	return 69;
 }

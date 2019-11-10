@@ -17,6 +17,9 @@ public:
 	virtual void visit_block(const Block&) = 0;
 	virtual void visit_local_decl(const VarDecl&) = 0;
 	virtual void visit_expr_stmt(const ExprStmt&) = 0;
+	virtual void visit_return_stmt(const Return&) = 0;
+	virtual void visit_if_else_stmt(const IfElse&) = 0;
+	virtual void visit_while_stmt(const While&) = 0;
 	virtual void visit_unary_expr(const UnaryExpr&) = 0;
 	virtual void visit_binary_expr(const BinaryExpr&) = 0;
 	virtual void visit_assign_expr(const AssignExpr&) = 0;

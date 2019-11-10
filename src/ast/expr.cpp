@@ -1,6 +1,7 @@
 #include "expr.hpp"
 #include "visitor.hpp"
 #include "../lexer.hpp"
+#include "../codegen/typecheck.hpp"
 #include <iostream>
 #include <iomanip>
 

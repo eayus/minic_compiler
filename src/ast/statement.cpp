@@ -13,12 +13,15 @@ namespace ast::statement {
 	}
 
 	void IfElse::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_if_else_stmt(*this);
 	}
 
 	void While::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_while_stmt(*this);
 	}
 
 	void Return::accept_visitor(ASTVisitor& visitor) {
+		visitor.visit_return_stmt(*this);
 	}
 
 	void ExprStmt::accept_visitor(ASTVisitor& visitor) {

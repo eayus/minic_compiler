@@ -27,13 +27,13 @@ int main(int argc, char** argv) {
 
 	l.lex(ts.tokens);
 
-	for (auto t : ts.tokens) {
+	/*for (auto t : ts.tokens) {
 		t.print();
-	}
+	}*/
 
 	auto prog = parse_program(ts);
 
-	//prog->print_tree("", true);
+	prog->print_tree("", true);
 
 	CodeGenerator cg;
 	prog->accept_visitor(cg);

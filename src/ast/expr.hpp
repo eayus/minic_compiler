@@ -66,6 +66,7 @@ namespace ast::expr {
 	struct AssignExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+
 		std::string name;
 		std::unique_ptr<Expr> expr;
 	};
@@ -81,6 +82,7 @@ namespace ast::expr {
 	struct FuncCallExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+
 		std::string func_name;
 		std::forward_list<std::unique_ptr<Expr>> params;
 	};
