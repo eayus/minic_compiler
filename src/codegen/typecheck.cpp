@@ -31,6 +31,9 @@ VarType TypeChecker::typeof_unary_expr(UnaryExpr& expr) {
 }
 
 VarType TypeChecker::typeof_binary_expr(BinaryExpr& expr) {
+	VarType ltype = this->typeof_exor(*expr.first_operand);
+	VarType rtype = this->typeof_expr(*expr.second_operand);
+	
 	//TODO: remove
 	return VarType::Int;
 }

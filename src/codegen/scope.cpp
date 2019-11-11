@@ -4,14 +4,28 @@ Scope::Scope() {
 	this->push_scope(); // Add the global scope
 }
 
-llvm::Value* Scope::lookup_variable(const std::string& s) {
+llvm::Value* Scope::lookup_variable_val(const std::string& s) {
 	for (auto it = this->frames.rbegin();
 	          it != this->frames.rend();
 		  it++) {
 		
 		auto map_iter = it->find(s);
 		if (map_iter != it->end()) {
-			return map_iter->second;
+			return map_iter->second.second;
+		}
+	}
+
+	return nullptr;
+}
+
+VarType Scope::lookup_variable_type(const std::string& s) {
+	for (auto it = this->frames.rbegin();
+	          it != this->frames.rend();
+		  it++) {
+		
+		auto map_iter = it->find(s);
+		if (map_iter != it->end()) {
+			return map_iter->second.first;
 		}
 	}
 
@@ -26,6 +40,6 @@ void Scope::pop_scope() {
 	this->frames.pop_back();
 }
 
-void Scope::register_var(const std::string& name, llvm::Value* value) {
-	this->frames.back().insert({ name, value });
+void Scope::register_var(const std::string& name, llvm::Value* value, VarType type) {
+	this->frames.back().insert({ name, { value, type } });
 }

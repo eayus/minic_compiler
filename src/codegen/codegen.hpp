@@ -44,6 +44,10 @@ public:
 	void print();
 
 private:
+	VarType get_current_expr_type();
+	void assert_type_eq(VarType expected, VarType received);
+
+
 	llvm::LLVMContext context;
 	llvm::Module module;
 	llvm::IRBuilder<> builder;
@@ -53,4 +57,5 @@ private:
 	llvm::BasicBlock* current_basic_block;
 	llvm::Function* current_function;
 	llvm::Value* current_expr;
+	std::optional<VarType> current_expr_type;
 };
