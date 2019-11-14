@@ -94,6 +94,18 @@ void CodeGenerator::visit_var_decl(const VarDecl& var_decl) {
 }
 
 void CodeGenerator::visit_func_decl(const FuncDecl& func_decl) {
+	// Register func type
+	{
+		std::forward_list<VarType> param_type_fl;
+		for (auto& param : func_decl.params) {
+			param_type_fl.push_front(param->type);
+		}
+		param_type_fl.reverse();
+		this->scope.register_func_type(func_decl.name, func_decl.return_type, param_type_fl);
+	}
+
+
+	// CG func
 	auto return_type = this->convert_return_type(func_decl.return_type);
 
 	std::vector<llvm::Type*> param_types;
@@ -114,6 +126,7 @@ void CodeGenerator::visit_func_decl(const FuncDecl& func_decl) {
 	for (auto& param : func_decl.params) {
 		llvm_arg->setName(param->name);
 		llvm::Value* alloca = this->builder.CreateAlloca(this->convert_var_type(param->type));
+		this->builder.CreateStore(llvm_arg, alloca);
 		this->scope.register_var(param->name, alloca, param->type);
 		llvm_arg++;
 	}
@@ -123,16 +136,6 @@ void CodeGenerator::visit_func_decl(const FuncDecl& func_decl) {
 	this->scope.pop_scope();
 
 	llvm::verifyFunction(*this->current_function, &llvm::errs());
-
-	// Register func type
-	{
-		std::forward_list<VarType> param_type_fl;
-		for (auto& param : func_decl.params) {
-			param_type_fl.push_front(param->type);
-		}
-		param_type_fl.reverse();
-		this->scope.register_func_type(func_decl.name, func_decl.return_type, param_type_fl);
-	}
 }
 
 void CodeGenerator::cg_block(const Block& block) {

@@ -384,13 +384,13 @@ std::unique_ptr<Expr> parse_bin_op(TokenStream& ts, std::unique_ptr<Expr> lhs, u
 
 			if (auto next_op = binary_op_from_token_type(ts.peek_type(1))) {
 				if (binary_op_precedence(*op) < binary_op_precedence(*next_op)) {
-					return parse_bin_op(ts, std::move(rhs), min_precedence + 1);
+					rhs = parse_bin_op(ts, std::move(rhs), min_precedence + 1);
 				}
 
 				lhs = llvm::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
 
 			} else {
-				return llvm::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
+				lhs = llvm::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
 			}
 
 
@@ -421,12 +421,16 @@ std::unique_ptr<Expr> parse_primary_expr(TokenStream& ts) {
 
 std::unique_ptr<Expr> parse_not_expr(TokenStream& ts) {
 	consume(ts, Token::Type::Not);
-	return parse_expr(ts);
+	//auto expr = parse_expr(ts);
+	auto expr = parse_primary_expr(ts);
+	return llvm::make_unique<UnaryExpr>(UnaryOp::Not, std::move(expr));
 }
 
 std::unique_ptr<Expr> parse_negate_expr(TokenStream& ts) {
 	consume(ts, Token::Type::Minus);
-	return parse_expr(ts);
+	//auto expr = parse_expr(ts);
+	auto expr = parse_primary_expr(ts);
+	return llvm::make_unique<UnaryExpr>(UnaryOp::Negate, std::move(expr));
 }
 
 std::unique_ptr<Expr> parse_int_expr(TokenStream& ts) {

@@ -1,5 +1,8 @@
 // MiniC program to compute the value of pi
 
+extern float print_float(float X);
+extern int print_int(int X);
+
 float pi() {
 
   bool flag;
@@ -19,6 +22,7 @@ float pi() {
     else {
       PI = PI - (4.0 / (i*(i+1)*(i+2)));
       //flag = true;
+      print_int(69);
     }
     flag = !flag;
     i = i+2;
