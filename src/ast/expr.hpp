@@ -3,15 +3,19 @@
 // TODO: Lexer considers bitwise vs logical AND/OR, grammar only considers logical.
 
 #include <memory>
+#include <vector>
 #include <forward_list>
 #include <string>
 #include <boost/optional.hpp>
 #include "../lexer.hpp"
 #include "ast.hpp"
+#include "type.hpp"
 
 using lexer::Token;
+using namespace ast::type;
 
-namespace ast::expr {
+namespace ast {
+namespace expr {
 
 	enum class BinaryOp {
 		Multiply,
@@ -28,6 +32,8 @@ namespace ast::expr {
 		And,
 		Or
 	};
+
+	std::vector<FuncType> binary_op_valid_types(BinaryOp op);
 
 	unsigned int binary_op_precedence(BinaryOp op);
 	boost::optional<BinaryOp> binary_op_from_token_type(Token::Type type);
@@ -111,4 +117,5 @@ namespace ast::expr {
 		bool value;
 	};
 
+}
 }

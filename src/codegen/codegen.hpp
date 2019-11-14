@@ -42,9 +42,11 @@ public:
 	llvm::Type* convert_return_type(ReturnType rt);
 	llvm::Type* convert_var_type(VarType vt);
 	void print();
+	void write_to_file(const char* filepath);
 
 private:
 	VarType get_current_expr_type();
+	void set_expr_type(ReturnType ret_type);
 	void assert_type_eq(VarType expected, VarType received);
 
 
@@ -54,8 +56,7 @@ private:
 
 	Scope scope;
 
-	llvm::BasicBlock* current_basic_block;
 	llvm::Function* current_function;
 	llvm::Value* current_expr;
-	std::optional<VarType> current_expr_type;
+	boost::optional<VarType> current_expr_type;
 };

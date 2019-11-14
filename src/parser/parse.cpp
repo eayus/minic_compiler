@@ -6,6 +6,8 @@
 #include "parse_exception.hpp"
 #include <iostream>
 #include <forward_list>
+#include <memory>
+#include <llvm/ADT/STLExtras.h>
 
 using namespace ast::expr;
 using namespace ast::statement;
@@ -14,7 +16,7 @@ using namespace ast::declaration;
 std::unique_ptr<Program> parse_program(TokenStream& ts) {
 	// program ::= extern_list decl_list
 	
-	auto program = std::make_unique<Program>();
+	auto program = llvm::make_unique<Program>();
 
 	program->externs = parse_extern_list(ts);
 	program->decls = parse_decl_list(ts);
@@ -53,7 +55,7 @@ std::forward_list<std::unique_ptr<Declaration>> parse_decl_list(TokenStream& ts)
 std::unique_ptr<Declaration> parse_decl(TokenStream& ts) {
 	if (ts.peek_type(1) == Token::Type::Void) {
 		// parse a void function
-		auto decl = std::make_unique<FuncDecl>();
+		auto decl = llvm::make_unique<FuncDecl>();
 
 		decl->return_type = parse_return_type(ts);
 		decl->name = parse_identifier(ts);
@@ -72,7 +74,7 @@ std::unique_ptr<Declaration> parse_decl(TokenStream& ts) {
 	switch (ts.next().type) {
 		case Token::Type::SemiColon:
 			{
-				auto var_decl = std::make_unique<VarDecl>();
+				auto var_decl = llvm::make_unique<VarDecl>();
 
 				var_decl->type = var_type;
 				var_decl->name = name;
@@ -82,7 +84,7 @@ std::unique_ptr<Declaration> parse_decl(TokenStream& ts) {
 
 		case Token::Type::LParen:
 			{
-				auto func_decl = std::make_unique<FuncDecl>();
+				auto func_decl = llvm::make_unique<FuncDecl>();
 
 				func_decl->return_type = static_cast<ReturnType>(var_type);
 				func_decl->params = parse_params(ts);
@@ -101,7 +103,7 @@ std::unique_ptr<Declaration> parse_decl(TokenStream& ts) {
 std::unique_ptr<Block> parse_block(TokenStream& ts) {
 	consume(ts, Token::Type::LBrace);
 
-	auto block = std::make_unique<Block>();
+	auto block = llvm::make_unique<Block>();
 	block->var_decls = parse_local_decl_list(ts);
 	block->statements = parse_stmt_list(ts);
 
@@ -150,7 +152,7 @@ std::forward_list<std::unique_ptr<VarDecl>> parse_local_decl_list(TokenStream& t
 }
 
 std::unique_ptr<VarDecl> parse_local_decl(TokenStream& ts) {
-	auto local_decl = std::make_unique<VarDecl>();
+	auto local_decl = llvm::make_unique<VarDecl>();
 	local_decl->type = parse_var_type(ts);
 	local_decl->name = parse_identifier(ts);
 	consume(ts, Token::Type::SemiColon);
@@ -180,7 +182,7 @@ std::unique_ptr<Statement> parse_stmt(TokenStream& ts) {
 }
 
 std::unique_ptr<Statement> parse_expr_stmt(TokenStream& ts) {
-	auto stmt = std::make_unique<ExprStmt>();
+	auto stmt = llvm::make_unique<ExprStmt>();
 
 	if (ts.peek_type(1) == Token::Type::SemiColon) {
 		consume(ts, Token::Type::SemiColon);
@@ -194,7 +196,7 @@ std::unique_ptr<Statement> parse_expr_stmt(TokenStream& ts) {
 }
 
 std::unique_ptr<Statement> parse_if_stmt(TokenStream& ts) {
-	auto stmt = std::make_unique<IfElse>();
+	auto stmt = llvm::make_unique<IfElse>();
 
 	consume(ts, Token::Type::If);
 	consume(ts, Token::Type::LParen);
@@ -211,7 +213,7 @@ std::unique_ptr<Statement> parse_if_stmt(TokenStream& ts) {
 }
 
 std::unique_ptr<Statement> parse_while_stmt(TokenStream& ts) {
-	auto stmt = std::make_unique<While>();
+	auto stmt = llvm::make_unique<While>();
 
 	consume(ts, Token::Type::While);
 	consume(ts, Token::Type::LParen);
@@ -223,7 +225,7 @@ std::unique_ptr<Statement> parse_while_stmt(TokenStream& ts) {
 }
 
 std::unique_ptr<Statement> parse_return_stmt(TokenStream& ts) {
-	auto stmt = std::make_unique<Return>();
+	auto stmt = llvm::make_unique<Return>();
 
 	consume(ts, Token::Type::Return);
 
@@ -265,7 +267,7 @@ std::unique_ptr<ExternDecl> parse_extern(TokenStream& ts) {
 	// extern ::= "extern" return_type IDENTIFIER "(" params ")" ";"
 	ts.next();
 
-	auto extern_decl = std::make_unique<ExternDecl>();
+	auto extern_decl = llvm::make_unique<ExternDecl>();
 
 	extern_decl->return_type = parse_return_type(ts);
 	extern_decl->name = parse_identifier(ts);
@@ -314,7 +316,7 @@ std::forward_list<std::unique_ptr<Param>> parse_param_list(TokenStream& ts) {
 }
 
 std::unique_ptr<Param> parse_param(TokenStream& ts) {
-	auto param = std::make_unique<Param>();
+	auto param = llvm::make_unique<Param>();
 
 	param->type = parse_var_type(ts);
 	param->name = parse_identifier(ts);
@@ -385,10 +387,10 @@ std::unique_ptr<Expr> parse_bin_op(TokenStream& ts, std::unique_ptr<Expr> lhs, u
 					return parse_bin_op(ts, std::move(rhs), min_precedence + 1);
 				}
 
-				lhs = std::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
+				lhs = llvm::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
 
 			} else {
-				return std::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
+				return llvm::make_unique<BinaryExpr>(*op, std::move(lhs), std::move(rhs));
 			}
 
 
@@ -431,21 +433,21 @@ std::unique_ptr<Expr> parse_int_expr(TokenStream& ts) {
 	// TODO: does this int parsing function meet the parsing spec?
 	
 	int value = std::stoi(std::string(ts.next().lexeme));
-	return std::make_unique<IntExpr>(value);
+	return llvm::make_unique<IntExpr>(value);
 }
 
 std::unique_ptr<Expr> parse_float_expr(TokenStream& ts) {
 	float value = std::stof(std::string(ts.next().lexeme));
-	return std::make_unique<FloatExpr>(value);
+	return llvm::make_unique<FloatExpr>(value);
 }
 
 std::unique_ptr<Expr> parse_bool_expr(TokenStream& ts) {
 	auto s = ts.next().lexeme;
 	
-	if (s == "true") {
-		return std::make_unique<BoolExpr>(true);
+	if (s == boost::string_ref("true")) {
+		return llvm::make_unique<BoolExpr>(true);
 	} else {
-		return std::make_unique<BoolExpr>(false);
+		return llvm::make_unique<BoolExpr>(false);
 	}
 }
 
@@ -457,7 +459,7 @@ std::unique_ptr<Expr> parse_parens_expr(TokenStream& ts) {
 }
 
 std::unique_ptr<Expr> parse_assign_expr(TokenStream& ts) {
-	auto assign_expr = std::make_unique<AssignExpr>();
+	auto assign_expr = llvm::make_unique<AssignExpr>();
 
 	assign_expr->name = parse_identifier(ts);
 	consume(ts, Token::Type::Assign);
@@ -467,7 +469,7 @@ std::unique_ptr<Expr> parse_assign_expr(TokenStream& ts) {
 }
 
 std::unique_ptr<Expr> parse_func_call_expr(TokenStream& ts) {
-	auto fc_expr = std::make_unique<FuncCallExpr>();
+	auto fc_expr = llvm::make_unique<FuncCallExpr>();
 
 	fc_expr->func_name = parse_identifier(ts);
 	consume(ts, Token::Type::LParen);
@@ -478,7 +480,7 @@ std::unique_ptr<Expr> parse_func_call_expr(TokenStream& ts) {
 }
 
 std::unique_ptr<Expr> parse_identifier_expr(TokenStream& ts) {
-	return std::make_unique<IdentifierExpr>(std::string(ts.next().lexeme));
+	return llvm::make_unique<IdentifierExpr>(std::string(ts.next().lexeme));
 }
 
 std::forward_list<std::unique_ptr<Expr>> parse_args(TokenStream& ts) {

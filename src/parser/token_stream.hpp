@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../lexer.hpp"
-#include <optional>
 
 using namespace lexer;
 

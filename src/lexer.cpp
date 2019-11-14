@@ -87,17 +87,17 @@ namespace lexer {
 
 			boost::string_ref identifier = str.substr(token_start, i - token_start);
 
-			if (identifier == "int")    return Token(Token::Type::Int,     identifier);
-			if (identifier == "bool")   return Token(Token::Type::Bool,    identifier);
-			if (identifier == "float")  return Token(Token::Type::Float,   identifier);
-			if (identifier == "void")   return Token(Token::Type::Void,    identifier);
-			if (identifier == "extern") return Token(Token::Type::Extern,  identifier);
-			if (identifier == "if")     return Token(Token::Type::If,      identifier);
-			if (identifier == "else")   return Token(Token::Type::Else,    identifier);
-			if (identifier == "while")  return Token(Token::Type::While,   identifier);
-			if (identifier == "return") return Token(Token::Type::Return,  identifier);
-			if (identifier == "true")   return Token(Token::Type::BoolLit, identifier);
-			if (identifier == "false")  return Token(Token::Type::BoolLit, identifier);
+			if (identifier == boost::string_ref("int"))    return Token(Token::Type::Int,     identifier);
+			if (identifier == boost::string_ref("bool"))   return Token(Token::Type::Bool,    identifier);
+			if (identifier == boost::string_ref("float"))  return Token(Token::Type::Float,   identifier);
+			if (identifier == boost::string_ref("void"))   return Token(Token::Type::Void,    identifier);
+			if (identifier == boost::string_ref("extern")) return Token(Token::Type::Extern,  identifier);
+			if (identifier == boost::string_ref("if"))     return Token(Token::Type::If,      identifier);
+			if (identifier == boost::string_ref("else"))   return Token(Token::Type::Else,    identifier);
+			if (identifier == boost::string_ref("while"))  return Token(Token::Type::While,   identifier);
+			if (identifier == boost::string_ref("return")) return Token(Token::Type::Return,  identifier);
+			if (identifier == boost::string_ref("true"))   return Token(Token::Type::BoolLit, identifier);
+			if (identifier == boost::string_ref("false"))  return Token(Token::Type::BoolLit, identifier);
 
 			return Token(Token::Type::Identifier, identifier);
 		}

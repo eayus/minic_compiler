@@ -1,11 +1,11 @@
 #include "expr.hpp"
 #include "visitor.hpp"
 #include "../lexer.hpp"
-#include "../codegen/typecheck.hpp"
 #include <iostream>
 #include <iomanip>
 
-namespace ast::expr {
+namespace ast {
+namespace expr {
 
 	UnaryExpr::UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand) noexcept :
 		op(op),
@@ -27,6 +27,47 @@ namespace ast::expr {
 
 	BoolExpr::BoolExpr(bool value) noexcept :
 		value(value) { }
+
+	std::vector<FuncType> binary_op_func_type(BinaryOp op) {
+		switch (op) {
+			case BinaryOp::Multiply:
+			case BinaryOp::Divide:
+			case BinaryOp::Plus:
+			case BinaryOp::Minus:
+				return {
+					FuncType::binary(VarType::Int, VarType::Int, ReturnType::Int),
+					FuncType::binary(VarType::Float, VarType::Float, ReturnType::Float)
+				};
+
+			case BinaryOp::Modulo:
+				return {
+					FuncType::binary(VarType::Int, VarType::Int, ReturnType::Int)
+				};
+
+			case BinaryOp::Less:
+			case BinaryOp::LessEqual:
+			case BinaryOp::Greater:
+			case BinaryOp::GreaterEqual:
+				return {
+					FuncType::binary(VarType::Int, VarType::Int, ReturnType::Bool),
+					FuncType::binary(VarType::Float, VarType::Float, ReturnType::Bool)
+				};
+
+			case BinaryOp::Equals:
+			case BinaryOp::NotEquals:
+				return {
+					FuncType::binary(VarType::Int, VarType::Int, ReturnType::Bool),
+					FuncType::binary(VarType::Float, VarType::Float, ReturnType::Bool),
+					FuncType::binary(VarType::Bool, VarType::Bool, ReturnType::Bool),
+				};
+
+			case BinaryOp::And:
+			case BinaryOp::Or:
+				return {
+					FuncType::binary(VarType::Bool, VarType::Bool, ReturnType::Bool)
+				};
+		}
+	}
 
 	unsigned int binary_op_precedence(BinaryOp op) {
 		switch (op) {
@@ -202,4 +243,4 @@ namespace ast::expr {
 	}
 
 }
-
+}

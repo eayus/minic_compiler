@@ -2,7 +2,8 @@
 #include <iostream>
 #include "visitor.hpp"
 
-namespace ast::declaration {
+namespace ast {
+namespace declaration {
 
 	const char* return_type_to_str(ReturnType rt) {
 		switch (rt) {
@@ -150,4 +151,5 @@ namespace ast::declaration {
 		this->body->print_tree(indent_str, true);
 	}
 	
+}
 }

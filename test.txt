@@ -9,13 +9,16 @@ int fibonacci(int n, bool m)
 	int x;
 	int y;
 	bool z;
+	float p;
 
 	{
 		x = 3 + 5;
 	}
+	n + 2;
 	z = false;
 	print_bool(1 + 1, true);
 	while (true) { x + 3; }
+	p = print_int(0, true) + 3.0;
 
 	return 69;
 }

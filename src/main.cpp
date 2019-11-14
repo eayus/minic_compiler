@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/utility/string_ref.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 #include "lexer.hpp"
+#include <fstream>
+#include <sstream>
 
 #include "ast/expr.hpp"
 #include "ast/statement.hpp"
@@ -22,6 +24,13 @@ int main(int argc, char** argv) {
 
 	lexer::Lexer l(boost::string_ref(file.data(), file.size()));
 
+	/*std::ifstream file(filepath);
+	std::stringstream file_buf;
+	file_buf << file.rdbuf();
+	boost::string_ref file_contents = file_buf.str();
+
+	lexer::Lexer l(file_contents);*/
+
 	//std::vector<lexer::Token> tokens;
 	TokenStream ts;
 
@@ -38,6 +47,7 @@ int main(int argc, char** argv) {
 	CodeGenerator cg;
 	prog->accept_visitor(cg);
 	cg.print();
+	cg.write_to_file("output.ll");
 	
 	file.close();
 }

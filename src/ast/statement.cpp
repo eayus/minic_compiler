@@ -6,7 +6,8 @@
 
 // TODO: with this iterating method there is a bug which means it segfaults on empty lists, it is only solvied in the "Block" print_tree method.
 
-namespace ast::statement {
+namespace ast {
+namespace statement {
 
 	void Block::accept_visitor(ASTVisitor& visitor) {
 		visitor.visit_block(*this);
@@ -124,4 +125,5 @@ namespace ast::statement {
 		}
 	}
 
+}
 }

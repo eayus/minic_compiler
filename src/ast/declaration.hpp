@@ -4,24 +4,16 @@
 #include "statement.hpp"
 #include <forward_list>
 #include <string>
+#include <vector>
+#include "type.hpp"
 
-namespace ast::declaration {
+namespace ast {
+namespace declaration {
 	
 	using namespace ast::statement;
+	using namespace ast::type;
 
-	enum class VarType {
-		Int = 0,
-		Float = 1,
-		Bool = 2
-	};
-
-	enum class ReturnType {
-		Int = 0,
-		Float = 1,
-		Bool = 2,
-		Void = 3
-	};
-
+	
 	struct Param : public ASTNode {
 		VarType type;
 		std::string name;
@@ -71,4 +63,5 @@ namespace ast::declaration {
 	const char* return_type_to_str(ReturnType rt);
 	const char* var_type_to_str(VarType vt);
 
+}
 }

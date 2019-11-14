@@ -5,11 +5,14 @@
 #include "expr.hpp"
 #include "ast.hpp"
 
-namespace ast::declaration {
+namespace ast {
+namespace declaration {
 	struct VarDecl;
 }
+}
 
-namespace ast::statement {
+namespace ast {
+namespace statement {
 	using namespace ast::expr;
 	using namespace ast::declaration;
 
@@ -56,4 +59,5 @@ namespace ast::statement {
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
+}
 }
