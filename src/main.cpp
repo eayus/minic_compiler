@@ -2,7 +2,7 @@
 #include <vector>
 #include <boost/utility/string_ref.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
-#include "lexer.hpp"
+#include "lexer/lexer.hpp"
 #include <fstream>
 #include <sstream>
 
@@ -36,11 +36,12 @@ int main(int argc, char** argv) {
 
 	l.lex(ts.tokens);
 
-	/*for (auto t : ts.tokens) {
+	for (auto t : ts.tokens) {
 		t.print();
-	}*/
+	}
 
-	auto prog = parse_program(ts);
+	Parser p(ts);
+	auto prog = p.parse_program();
 
 	prog->print_tree("", true);
 

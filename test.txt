@@ -11,6 +11,8 @@ int fibonacci(int n, bool m)
 	bool z;
 	float p;
 
+	extern
+
 	{
 		x = 3 + 5;
 	}

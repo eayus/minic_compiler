@@ -16,7 +16,7 @@
 //TODO: when typechecking, enforce that void functions have a "RetVoid" at the end.
 //TODO: if statements without an else
 //TODO: if assign statements work in 'if' and 'while' conditions
-//TODO: does my parser check for EOF?
+//TODO: do return types match type of value returned?
 
 using namespace ast::declaration;
 

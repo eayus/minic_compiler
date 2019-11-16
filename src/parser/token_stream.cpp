@@ -14,11 +14,25 @@ Token::Type TokenStream::peek_type(size_t num_ahead) noexcept {
 }
 
 const Token& TokenStream::next() noexcept {
-	static Token END_OF_INPUT_TOKEN(Token::Type::EndOfInput, "");
-
 	if (this->index >= this->tokens.size()) {
-		return END_OF_INPUT_TOKEN;
+		return this->tokens.back();
 	}
 
 	return this->tokens[this->index++];
+}
+
+unsigned int TokenStream::current_line() noexcept {
+	if (this->index >= this->tokens.size()) {
+		return this->tokens.back().line_num;
+	} else {
+		return this->tokens[this->index].line_num;
+	}
+}
+
+unsigned int TokenStream::current_column() noexcept {
+	if (this->index >= this->tokens.size()) {
+		return this->tokens.back().column_num;
+	} else {
+		return this->tokens[this->index].column_num;
+	}
 }

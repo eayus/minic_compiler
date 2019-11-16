@@ -1,6 +1,6 @@
 #include "expr.hpp"
 #include "visitor.hpp"
-#include "../lexer.hpp"
+#include "../lexer/lexer.hpp"
 #include <iostream>
 #include <iomanip>
 

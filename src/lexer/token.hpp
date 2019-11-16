@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <boost/utility/string_ref.hpp>
 
 namespace lexer {
 
+	// A class to represent a lexical token
 	class Token {
 	public:
 		enum class Type {
@@ -45,33 +45,18 @@ namespace lexer {
 			GreaterEqual,
 			Divide,
 			EndOfInput,
-			Invalid,
 		};
 
-
-
-
-		Token(Type type, boost::string_ref lexeme);
-		void print();
-
+		Token(); // TODO: REMOVE
+		Token(Type type, boost::string_ref lexeme, unsigned int line_num, unsigned int column_num);
+		void print() const;
+		std::string to_string() const;
 		static const char* type_to_str(Type type);
 
 		Type type;
-		boost::string_ref lexeme;
+		boost::string_ref lexeme; // The string of the token
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
-
-	class Lexer {
-	public:
-		Lexer(boost::string_ref str);
-		void lex(std::vector<Token>& tokens);
-
-	private:
-		Token next_token();
-	
-	private:
-		size_t i;
-		boost::string_ref str;
-		std::vector<Token> tokens;
-	};
 }

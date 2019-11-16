@@ -7,7 +7,7 @@
 #include <forward_list>
 #include <string>
 #include <boost/optional.hpp>
-#include "../lexer.hpp"
+#include "../lexer/lexer.hpp"
 #include "ast.hpp"
 #include "type.hpp"
 
