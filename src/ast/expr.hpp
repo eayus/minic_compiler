@@ -49,6 +49,8 @@ namespace expr {
 
 	struct Expr : public ASTNode {
 		virtual void print_tree(std::string indent_str, bool is_last) const override = 0;
+		unsigned int get_line_num();
+		unsigned int get_column_num();
 	};
 
 	struct UnaryExpr : public Expr {

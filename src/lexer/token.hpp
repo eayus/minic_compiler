@@ -47,7 +47,7 @@ namespace lexer {
 			EndOfInput,
 		};
 
-		Token(); // TODO: REMOVE
+		Token();
 		Token(Type type, boost::string_ref lexeme, unsigned int line_num, unsigned int column_num);
 		void print() const;
 		std::string to_string() const;

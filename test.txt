@@ -1,33 +1,3 @@
-extern int print_int(int lol, bool y);
-extern int print_bool(int lol, bool y);
-
-int y;
-float p;
-
-bool fibonacci(int n, bool m)
-{
+void main() {
 	int x;
-	int y;
-	bool z;
-	float p;
-
-	{
-		x = 5;
-	}
-	if (x == 2) {
-		x=5;
-	}
-
-	z();
-	n + 2;
-	z = false;
-	print_bool(1 + 1, true);
-	while (true) { x + 3; }
-	p = print_int(0, true) + 3.0;
-
-	while (true);
-
-	z = !true;
-
-	return true;
 }

@@ -45,9 +45,8 @@ public:
 	void write_to_file(const char* filepath);
 
 private:
-	VarType get_current_expr_type();
+	VarType get_current_expr_type(unsigned int line_num, unsigned int column_num, const char* context);
 	void set_expr_type(ReturnType ret_type);
-	void assert_type_eq(VarType expected, VarType received);
 
 
 	llvm::LLVMContext context;

@@ -26,6 +26,7 @@ public:
 	void pop_scope();
 	void register_var(const std::string& name, llvm::Value* value, VarType);
 	void register_func_type(const std::string& name, ReturnType ret_type, std::forward_list<VarType> param_types);
+	bool function_exists(const std::string& name);
 
 private:
 	std::vector<std::unordered_map<std::string, VariableEntry>> frames;

@@ -7,6 +7,14 @@
 namespace ast {
 namespace expr {
 
+	unsigned int Expr::get_line_num() {
+		return 0;
+	}
+
+	unsigned int Expr::get_column_num() {
+		return 0;
+	}
+
 	UnaryExpr::UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept :
 		op(op),
 		operand(std::move(operand)),

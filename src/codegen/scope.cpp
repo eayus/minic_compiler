@@ -56,3 +56,8 @@ void Scope::register_var(const std::string& name, llvm::Value* value, VarType ty
 void Scope::register_func_type(const std::string& name, ReturnType ret_type, std::forward_list<VarType> param_types) {
 	this->func_types.insert({ name, { ret_type, param_types } });
 }
+
+bool Scope::function_exists(const std::string& name) {
+	auto func = this->func_types.find(name);
+	return func != this->func_types.end();
+}

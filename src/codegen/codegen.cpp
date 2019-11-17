@@ -14,10 +14,6 @@
 #include <llvm/IR/Verifier.h>
 #include <llvm/Support/FileSystem.h>
 
-//TODO functions with same name
-//TODO operator associativity?
-//TODO function type checking?
-
 using namespace ast::declaration;
 
 CodeGenerator::CodeGenerator() :
@@ -54,6 +50,14 @@ void CodeGenerator::visit_program(const Program& program) {
 }
 
 void CodeGenerator::visit_extern_decl(const ExternDecl& extern_decl) {
+	if (this->scope.function_exists(extern_decl.name)) {
+		throw TypeError(
+			extern_decl.line_num,
+			extern_decl.column_num,
+			std::string("a function called \"") + extern_decl.name + "\" has already been declared"
+		);
+	}
+
 	auto return_type = this->convert_return_type(extern_decl.return_type);
 
 	std::vector<llvm::Type*> param_types;
@@ -94,6 +98,14 @@ void CodeGenerator::visit_var_decl(const VarDecl& var_decl) {
 }
 
 void CodeGenerator::visit_func_decl(const FuncDecl& func_decl) {
+	if (this->scope.function_exists(func_decl.name)) {
+		throw TypeError(
+			func_decl.line_num,
+			func_decl.column_num,
+			std::string("a function called \"") + func_decl.name + "\" has already been declared"
+		);
+	}
+
 	// Register func type
 	{
 		std::forward_list<VarType> param_type_fl;
@@ -143,6 +155,9 @@ void CodeGenerator::visit_func_decl(const FuncDecl& func_decl) {
 	
 	// Handle return block
 	if (this->return_called || func_decl.return_type == ReturnType::Void) {
+		if (!this->return_called && func_decl.return_type == ReturnType::Void) {
+			this->builder.CreateBr(this->return_block);
+		}
 		return_called = false;
 		this->builder.SetInsertPoint(this->return_block);
 		if (func_decl.return_type == ReturnType::Void) {
@@ -199,7 +214,6 @@ void CodeGenerator::visit_expr_stmt(const ExprStmt& expr_stmt) {
 }
 
 void CodeGenerator::visit_return_stmt(const Return& ret_stmt) {
-	//TODO: typecheck here
 	if (ret_stmt.return_val == nullptr) {
 		if (this->current_return_type != ReturnType::Void) {
 			throw TypeError(ret_stmt.line_num, ret_stmt.column_num, "return statements for non-void functions must have an associated return value");
@@ -207,12 +221,12 @@ void CodeGenerator::visit_return_stmt(const Return& ret_stmt) {
 		this->builder.CreateBr(this->return_block);
 	} else {
 		ret_stmt.return_val->accept_visitor(*this);
-		if ((size_t)this->current_return_type != (size_t)this->get_current_expr_type()) {
+		if ((size_t)this->current_return_type != (size_t)this->get_current_expr_type(ret_stmt.line_num, ret_stmt.column_num, "as a return value")) {
 			throw TypeError(
 				ret_stmt.line_num,
 				ret_stmt.column_num,
 				std::string("return value of type ")
-					+ var_type_to_str(this->get_current_expr_type())
+					+ var_type_to_str(this->get_current_expr_type(ret_stmt.line_num, ret_stmt.column_num, "as a return value"))
 					+ " does not match the return type "
 					+ return_type_to_str(this->current_return_type)
 					+ " of the function"
@@ -327,7 +341,7 @@ void CodeGenerator::write_to_file(const char* filepath) {
 void CodeGenerator::visit_unary_expr(const UnaryExpr& unary_expr) {
 	unary_expr.operand->accept_visitor(*this);
 
-	VarType expr_type = this->get_current_expr_type();
+	VarType expr_type = this->get_current_expr_type(unary_expr.line_num, unary_expr.column_num, "as an argument to a unary operator");
 
 	if (unary_expr.op == UnaryOp::Not) {
 		if (expr_type == VarType::Bool) {
@@ -358,11 +372,11 @@ void CodeGenerator::visit_unary_expr(const UnaryExpr& unary_expr) {
 void CodeGenerator::visit_binary_expr(const BinaryExpr& binary_expr) {
 	binary_expr.first_operand->accept_visitor(*this);
 	llvm::Value* lhs = this->current_expr;
-	VarType lhs_type = this->get_current_expr_type();
+	VarType lhs_type = this->get_current_expr_type(binary_expr.line_num, binary_expr.column_num, "as an operand to a binary operator");
 
 	binary_expr.second_operand->accept_visitor(*this);
 	llvm::Value* rhs = this->current_expr;
-	VarType rhs_type = this->get_current_expr_type();
+	VarType rhs_type = this->get_current_expr_type(binary_expr.line_num, binary_expr.column_num, "as an operand to a binary operator");
 
 	const OpTable& op_table = OpTable::for_op(binary_expr.op);
 	std::vector<VarType> actual_operand_types { lhs_type, rhs_type };
@@ -402,7 +416,7 @@ void CodeGenerator::visit_binary_expr(const BinaryExpr& binary_expr) {
 void CodeGenerator::visit_assign_expr(const AssignExpr& assign_expr) {
 	assign_expr.expr->accept_visitor(*this);
 
-	VarType actual_type = this->get_current_expr_type();
+	VarType actual_type = this->get_current_expr_type(assign_expr.line_num, assign_expr.column_num, "as the right hand side of an assignment");
 	if (auto variable_type = this->scope.lookup_variable_type(assign_expr.name)) {
 		if (actual_type != *variable_type) {
 			throw TypeError(
@@ -442,32 +456,43 @@ void CodeGenerator::visit_func_call_expr(const FuncCallExpr& func_call_expr) {
 		auto func_param_types = func_type->second;
 
 		std::vector<llvm::Value*> params;
+		std::vector<VarType> actual_param_types;
 
 		for (auto& param_expr : func_call_expr.params) {
 			param_expr->accept_visitor(*this);
 			params.push_back(this->current_expr);
+			auto actual_param_type = this->get_current_expr_type(param_expr->get_line_num(), param_expr->get_column_num(), "as parameter");
+			actual_param_types.push_back(actual_param_type);
+		}
+
+		// Typecheck and coerce
+		{
+			std::vector<VarType> expected_param_types;
+			for (auto vt : func_param_types) {
+				expected_param_types.push_back(vt);
+			}
+
+			auto maybe_coerce_funcs = coerce_list(actual_param_types, expected_param_types);
+			if (maybe_coerce_funcs) {
+				for (size_t i = 0; i < params.size(); i++) {
+					llvm::Value* new_param = (*maybe_coerce_funcs)[i](this->context, this->builder, params[i]);
+					params[i] = new_param;
+				}
+			} else {
+				throw TypeError(
+					func_call_expr.line_num,
+					func_call_expr.column_num,
+					std::string("the function \"") + func_call_expr.func_name + "\"",
+					std::vector<std::vector<VarType>> { expected_param_types },
+					actual_param_types
+				);
+			}
 		}
 
 		llvm::Function* func = this->module.getFunction(func_call_expr.func_name);
 		this->current_expr = this->builder.CreateCall(func, params);
 
-		switch (func_ret_type) {
-			case ReturnType::Int:
-				this->current_expr_type = VarType::Int;
-				break;
-
-			case ReturnType::Float:
-				this->current_expr_type = VarType::Float;
-				break;
-
-			case ReturnType::Bool:
-				this->current_expr_type = VarType::Bool;
-				break;
-
-			case ReturnType::Void:
-				this->current_expr_type = boost::none;
-				break;
-		}
+		this->set_expr_type(func_ret_type);
 	} else {
 		throw TypeError(
 			func_call_expr.line_num,
@@ -493,11 +518,16 @@ void CodeGenerator::visit_bool_expr(const BoolExpr& bool_expr) {
 	this->current_expr_type = VarType::Bool;
 }
 
-VarType CodeGenerator::get_current_expr_type() {
+VarType CodeGenerator::get_current_expr_type(unsigned int line_num, unsigned int column_num, const char* context) {
 	if (this->current_expr_type) {
 		return *this->current_expr_type;
 	}
 
+	throw TypeError(
+		line_num,
+		column_num,
+		std::string("cannot use an expression of type void ") + context
+	);
 	throw std::runtime_error("Cannot operate on something of type void");
 }
 
@@ -507,15 +537,5 @@ void CodeGenerator::set_expr_type(ReturnType ret_type) {
 		case ReturnType::Int: this->current_expr_type = VarType::Int; break;
 		case ReturnType::Float: this->current_expr_type = VarType::Float; break;
 		case ReturnType::Bool: this->current_expr_type = VarType::Bool; break;
-	}
-}
-
-void CodeGenerator::assert_type_eq(VarType expected, VarType received) {
-	if (expected != received) {
-		std::string error_str = "Expected: ";
-		error_str += var_type_to_str(expected);
-		error_str += ", Got: ";
-		error_str += var_type_to_str(received);
-		throw std::runtime_error(error_str);
 	}
 }

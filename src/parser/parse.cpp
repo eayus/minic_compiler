@@ -73,10 +73,15 @@ std::forward_list<std::unique_ptr<Declaration>> Parser::parse_decl_list() {
 }
 
 std::unique_ptr<Declaration> Parser::parse_decl() {
+	auto line_num = this->ts.current_line();
+	auto column_num = this->ts.current_column();
+
 	if (ts.peek_type(1) == Token::Type::Void) {
 		// parse a void function
 		auto decl = llvm::make_unique<FuncDecl>();
 
+		decl->line_num = line_num;
+		decl->column_num = column_num;
 		decl->return_type = this->parse_return_type();
 		decl->name = this->parse_identifier("a function declaration");
 		this->consume(Token::Type::LParen, "a function declaration", "a \"(\" to signify the start of the parameter list");
@@ -107,6 +112,8 @@ std::unique_ptr<Declaration> Parser::parse_decl() {
 			{
 				auto func_decl = llvm::make_unique<FuncDecl>();
 
+				func_decl->line_num = line_num;
+				func_decl->column_num = column_num;
 				func_decl->return_type = static_cast<ReturnType>(var_type);
 				func_decl->params = this->parse_params();
 				func_decl->name = name;
@@ -407,6 +414,8 @@ std::unique_ptr<ExternDecl> Parser::parse_extern() {
 
 	auto extern_decl = llvm::make_unique<ExternDecl>();
 
+	extern_decl->line_num = this->ts.current_line();
+	extern_decl->column_num = this->ts.current_column();
 	extern_decl->return_type = this->parse_return_type();
 	extern_decl->name = this->parse_identifier("extern declaration");
 	this->consume(Token::Type::LParen, "an extern declaration", "a \"(\" to signify the beginning of the parameter list");
@@ -626,8 +635,6 @@ std::unique_ptr<Expr> Parser::parse_negate_expr() {
 }
 
 std::unique_ptr<Expr> Parser::parse_int_expr() {
-	// TODO: does this int parsing function meet the parsing spec?
-	
 	int value = std::stoi(std::string(this->ts.next().lexeme));
 	return llvm::make_unique<IntExpr>(value);
 }

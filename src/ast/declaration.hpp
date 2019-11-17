@@ -29,6 +29,8 @@ namespace declaration {
 		ReturnType return_type;
 		std::string name;
 		std::forward_list<std::unique_ptr<Param>> params;
+		unsigned int line_num;
+		unsigned int column_num;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
@@ -47,6 +49,8 @@ namespace declaration {
 		std::string name;
 		std::forward_list<std::unique_ptr<Param>> params;
 		std::unique_ptr<Block> body;
+		unsigned int line_num;
+		unsigned int column_num;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
