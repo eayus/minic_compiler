@@ -48,14 +48,12 @@ namespace expr {
 	const char* unary_op_to_str(UnaryOp op);
 
 	struct Expr : public ASTNode {
-		virtual void print_tree(std::string indent_str, bool is_last) const override = 0;
 		virtual unsigned int get_line_num() = 0;
 		virtual unsigned int get_column_num() = 0;
 	};
 
 	struct UnaryExpr : public Expr {
 		UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -68,7 +66,6 @@ namespace expr {
 
 	struct BinaryExpr : public Expr {
 		BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int line_num;
 		unsigned int column_num;
@@ -81,7 +78,6 @@ namespace expr {
 	};
 
 	struct AssignExpr : public Expr {
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -94,7 +90,6 @@ namespace expr {
 
 	struct IdentifierExpr : public Expr {
 		IdentifierExpr(std::string&& name, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -105,7 +100,6 @@ namespace expr {
 	};
 
 	struct FuncCallExpr : public Expr {
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -118,7 +112,6 @@ namespace expr {
 
 	struct IntExpr : public Expr {
 		IntExpr(int value, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -130,7 +123,6 @@ namespace expr {
 
 	struct FloatExpr : public Expr {
 		FloatExpr(float value, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;
@@ -142,7 +134,6 @@ namespace expr {
 
 	struct BoolExpr : public Expr {
 		BoolExpr(bool value, unsigned int line_num, unsigned int column_num) noexcept;
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int get_line_num() override;
 		unsigned int get_column_num() override;

@@ -18,7 +18,6 @@ namespace declaration {
 		VarType type;
 		std::string name;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -32,7 +31,6 @@ namespace declaration {
 		unsigned int line_num;
 		unsigned int column_num;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -40,7 +38,6 @@ namespace declaration {
 		VarType type;
 		std::string name;
 		
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -52,7 +49,6 @@ namespace declaration {
 		unsigned int line_num;
 		unsigned int column_num;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -60,7 +56,6 @@ namespace declaration {
 		std::forward_list<std::unique_ptr<ExternDecl>> externs;
 		std::forward_list<std::unique_ptr<Declaration>> decls;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 

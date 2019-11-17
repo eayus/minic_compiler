@@ -17,14 +17,12 @@ namespace statement {
 	using namespace ast::declaration;
 
 	struct Statement : public ASTNode {
-		virtual void print_tree(std::string indent_str, bool is_last) const override = 0;
 	};
 
 	struct Block : public Statement {
 		std::forward_list<std::unique_ptr<VarDecl>> var_decls;
 		std::forward_list<std::unique_ptr<Statement>> statements;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -35,7 +33,6 @@ namespace statement {
 		unsigned int line_num;
 		unsigned int column_num;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -45,7 +42,6 @@ namespace statement {
 		unsigned int line_num;
 		unsigned int column_num;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
@@ -54,14 +50,12 @@ namespace statement {
 		unsigned int line_num;
 		unsigned int column_num;
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
 	struct ExprStmt : public Statement {
 		std::unique_ptr<Expr> expr; //potentially nullptr
 
-		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 	};
 
