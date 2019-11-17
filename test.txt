@@ -1,14 +1,7 @@
-extern void foo(void);
+extern void foo(int x);
 
 int x;
 
-void main() {
-	if (x == 2) {
-		return;
-	}
-
-	x = x + 5;
-	foo();
-	while (true) {
-	}
+int main() {
+	return 5;
 }

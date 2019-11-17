@@ -365,9 +365,42 @@ std::unique_ptr<Statement> Parser::parse_return_stmt() {
 
 	this->consume(Token::Type::Return, "", "");
 
-	if (ts.peek_type(1) != Token::Type::SemiColon) {
-		stmt->return_val = this->parse_expr();
+	switch (ts.peek_type(1)) {
+		case Token::Type::SemiColon:
+			stmt->return_val = nullptr;
+			break;
+
+		case Token::Type::Minus:
+		case Token::Type::Not:
+		case Token::Type::LParen:
+		case Token::Type::Identifier:
+		case Token::Type::IntLit:
+		case Token::Type::FloatLit:
+		case Token::Type::BoolLit:
+			stmt->return_val = this->parse_expr();
+			break;
+
+		default:
+			throw ParseError(
+				this->ts.current_line(),
+				this->ts.current_column(),
+				"a return statement",
+				"a semi colon to end the statement, or a return value",
+				std::vector<Token::Type> {
+					Token::Type::SemiColon,
+					Token::Type::Minus,
+					Token::Type::Not,
+					Token::Type::LParen,
+					Token::Type::Identifier,
+					Token::Type::IntLit,
+					Token::Type::FloatLit,
+					Token::Type::BoolLit
+				},
+				ts.next()
+			);
 	}
+
+	this->consume(Token::Type::SemiColon, "a return statement", "a \";\" to end the return statement");
 
 	return stmt;
 }

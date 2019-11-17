@@ -10,6 +10,7 @@
 #include "ast/expr.hpp"
 #include "ast/statement.hpp"
 #include "ast/declaration.hpp"
+#include "ast/tree_printer.hpp"
 
 #include "parser/parse.hpp"
 #include "parser/token_stream.hpp"
@@ -49,7 +50,8 @@ int main(int argc, char** argv) {
 		auto prog = p.parse_program();
 
 		// Print AST
-		prog->print_tree("", true);
+		TreePrinter tp;
+		prog->accept_visitor(tp);
 
 		// Generate code into "output.ll"
 		CodeGenerator cg;
