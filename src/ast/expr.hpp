@@ -85,11 +85,13 @@ namespace expr {
 	};
 
 	struct IdentifierExpr : public Expr {
-		IdentifierExpr(std::string&& name) noexcept;
+		IdentifierExpr(std::string&& name, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 
 		std::string name;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct FuncCallExpr : public Expr {
@@ -98,6 +100,8 @@ namespace expr {
 
 		std::string func_name;
 		std::forward_list<std::unique_ptr<Expr>> params;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct IntExpr : public Expr {

@@ -12,11 +12,13 @@ bool fibonacci(int n, bool m)
 	float p;
 
 	{
-		x = 3 + true;
+		x = 5;
 	}
 	if (x == 2) {
 		x=5;
 	}
+
+	z();
 	n + 2;
 	z = false;
 	print_bool(1 + 1, true);

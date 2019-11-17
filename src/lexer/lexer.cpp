@@ -99,10 +99,10 @@ namespace lexer {
 		if (str[i] == '&') {
 			if (str[i + 1] == '&') {
 				i += 2;
-				return Token(Token::Type::BitAnd, str.substr(i - 2, 2), this->current_line, i - 2 - this->last_newline_index);
+				return Token(Token::Type::LogicAnd, str.substr(i - 2, 2), this->current_line, i - 2 - this->last_newline_index);
 			} else {
 				i += 1;
-				return Token(Token::Type::LogicAnd, str.substr(i - 1, 1), this->current_line, i - 1 - this->last_newline_index);
+				return Token(Token::Type::BitAnd, str.substr(i - 1, 1), this->current_line, i - 1 - this->last_newline_index);
 			}
 		}
 
@@ -111,10 +111,10 @@ namespace lexer {
 		if (str[i] == '|') {
 			if (str[i + 1] == '|'){
 				i += 2;
-				return Token(Token::Type::BitOr, str.substr(i - 2, 2), this->current_line, i - 2 - this->last_newline_index);
+				return Token(Token::Type::LogicOr, str.substr(i - 2, 2), this->current_line, i - 2 - this->last_newline_index);
 			} else {
 				i += 1;
-				return Token(Token::Type::LogicOr, str.substr(i - 1, 1), this->current_line, i - 1 - this->last_newline_index);
+				return Token(Token::Type::BitOr, str.substr(i - 1, 1), this->current_line, i - 1 - this->last_newline_index);
 			}
 		}
 

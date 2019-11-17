@@ -20,8 +20,10 @@ namespace expr {
 		line_num(line_num),
 		column_num(column_num) { }
 
-	IdentifierExpr::IdentifierExpr(std::string&& name) noexcept :
-		name(std::move(name)) { }
+	IdentifierExpr::IdentifierExpr(std::string&& name, unsigned int line_num, unsigned int column_num) noexcept :
+		name(std::move(name)),
+		line_num(line_num),
+		column_num(column_num) { }
 
 	IntExpr::IntExpr(int value) noexcept :
 		value(value) { }

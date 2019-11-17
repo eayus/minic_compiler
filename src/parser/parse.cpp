@@ -668,6 +668,9 @@ std::unique_ptr<Expr> Parser::parse_assign_expr() {
 
 std::unique_ptr<Expr> Parser::parse_func_call_expr() {
 	auto fc_expr = llvm::make_unique<FuncCallExpr>();
+	
+	fc_expr->line_num = this->ts.current_line();
+	fc_expr->column_num = this->ts.current_column();
 
 	fc_expr->func_name = this->parse_identifier("a function call");
 	this->consume(Token::Type::LParen, "a function call", "a \"(\" to begin the parameter list");
@@ -678,12 +681,14 @@ std::unique_ptr<Expr> Parser::parse_func_call_expr() {
 }
 
 std::unique_ptr<Expr> Parser::parse_identifier_expr() {
-	return llvm::make_unique<IdentifierExpr>(std::string(this->ts.next().lexeme));
+	auto line_num = this->ts.current_line();
+	auto column_num = this->ts.current_column();
+	return llvm::make_unique<IdentifierExpr>(std::string(this->ts.next().lexeme), line_num, column_num);
 }
 
 std::forward_list<std::unique_ptr<Expr>> Parser::parse_args() {
 	switch (this->ts.peek_type(1)) {
-		case Token::Type::RBrace: {
+		case Token::Type::RParen: {
 				std::forward_list<std::unique_ptr<Expr>> args;
 				return args;
 			}
@@ -710,8 +715,6 @@ void Parser::consume(Token::Type expected_type, const char* context, const char*
 	const Token& tok = this->ts.next();
 	Token::Type actual_type = tok.type;
 	if (actual_type != expected_type) {
-		throw ParseError(std::string("Expected token of type ") + Token::type_to_str(expected_type) + ", instead encountered " + Token::type_to_str(actual_type));
-
 		throw ParseError(
 			this->ts.current_line(),
 			this->ts.current_column(),

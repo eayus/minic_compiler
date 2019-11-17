@@ -16,6 +16,7 @@
 
 //TODO functions with same name
 //TODO operator associativity?
+//TODO function type checking?
 
 using namespace ast::declaration;
 
@@ -411,7 +412,11 @@ void CodeGenerator::visit_assign_expr(const AssignExpr& assign_expr) {
 			);
 		}
 	} else {
-		throw std::runtime_error("In assign expression, undefined variable name");
+		throw TypeError(
+			assign_expr.line_num,
+			assign_expr.column_num,
+			std::string("in assignment, undefined variable \"") + assign_expr.name + "\""
+		);
 	}
 
 	llvm::Value* var = this->scope.lookup_variable_val(assign_expr.name);
@@ -421,7 +426,11 @@ void CodeGenerator::visit_assign_expr(const AssignExpr& assign_expr) {
 void CodeGenerator::visit_identifier_expr(const IdentifierExpr& identifier_expr) {
 	auto var = this->scope.lookup_variable_val(identifier_expr.name);
 	if (var == nullptr) {
-		throw std::runtime_error("Undeclared identifier");
+		throw TypeError(
+			identifier_expr.line_num,
+			identifier_expr.column_num,
+			std::string("undefined variable \"") + identifier_expr.name + "\""
+		);
 	}
 	this->current_expr = this->builder.CreateLoad(var);
 	this->current_expr_type = this->scope.lookup_variable_type(identifier_expr.name);
@@ -460,7 +469,11 @@ void CodeGenerator::visit_func_call_expr(const FuncCallExpr& func_call_expr) {
 				break;
 		}
 	} else {
-		throw std::runtime_error("Undeclrred function used");
+		throw TypeError(
+			func_call_expr.line_num,
+			func_call_expr.column_num,
+			std::string("undefined function \"") + func_call_expr.func_name + "\""
+		);
 	}
 }
 
