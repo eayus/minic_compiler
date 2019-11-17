@@ -1,14 +1,14 @@
-extern void foo(int x);
+extern void foo(void);
+
+int x;
 
 void main() {
-	int x;
 	if (x == 2) {
 		return;
 	}
 
-	foo(foo(1));
-
-
+	x = x + 5;
+	foo();
 	while (true) {
 	}
 }

@@ -489,6 +489,20 @@ void CodeGenerator::visit_func_call_expr(const FuncCallExpr& func_call_expr) {
 				expected_param_types.push_back(vt);
 			}
 
+			if (expected_param_types.size() != actual_param_types.size()) {
+				throw TypeError(
+					func_call_expr.line_num,
+					func_call_expr.column_num,
+					std::string("the function \"")
+						+ func_call_expr.func_name
+						+ "\" takes "
+						+ std::to_string(expected_param_types.size())
+						+ " parameters, but "
+						+ std::to_string(actual_param_types.size())
+						+ " were supplied"
+				);
+			}
+
 			auto maybe_coerce_funcs = coerce_list(actual_param_types, expected_param_types);
 			if (maybe_coerce_funcs) {
 				for (size_t i = 0; i < params.size(); i++) {

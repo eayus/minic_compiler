@@ -18,42 +18,47 @@
 #include "codegen/codegen.hpp"
 
 int main(int argc, char** argv) {
+	// Parse command line arguments
+
+	// If no parameters are supplied
+	if (argc == 1) {
+		std::cerr << "usage error: supply a minic file to compile as a command line argument!" << std::endl;
+		return 1;
+	}
+
+	// If more than 1 parameter is supplied
+	if (argc > 2) {
+		std::cerr << "usage error: only supply a single minic file as command line argument!" << std::endl;
+		return -1;
+	}
+
+	char* filepath = argv[1];
+
+
 	try {
-		char* filepath = argv[1];
-		std::cout << "filepath: " << filepath << std::endl;
+		// Memory map the file we want to compile. This allows for fast iteration during lexing.
 		boost::iostreams::mapped_file_source file(filepath);
-
-
+	
+		// Lex the file into our token stream.
 		lexer::Lexer l(boost::string_ref(file.data(), file.size()));
-
-		/*std::ifstream file(filepath);
-		std::stringstream file_buf;
-		file_buf << file.rdbuf();
-		boost::string_ref file_contents = file_buf.str();
-
-		lexer::Lexer l(file_contents);*/
-
-		//std::vector<lexer::Token> tokens;
 		TokenStream ts;
-
 		l.lex(ts.tokens);
 
-		for (auto t : ts.tokens) {
-			t.print();
-		}
-
+		// Parse the program into AST
 		Parser p(ts);
 		auto prog = p.parse_program();
 
+		// Print AST
 		prog->print_tree("", true);
 
+		// Generate code into "output.ll"
 		CodeGenerator cg;
 		prog->accept_visitor(cg);
-		cg.print();
 		cg.write_to_file("output.ll");
 		
 		file.close();
 	} catch (const std::exception& e) {
+		// Catch any exceptions we may have thrown during lexing, parsing or code generation, and print it out
 		std::cout << e.what() << std::endl;
 	}
 }
