@@ -59,4 +59,9 @@ private:
 	llvm::Function* current_function;
 	llvm::Value* current_expr;
 	boost::optional<VarType> current_expr_type;
+	// Variables for managing returns
+	llvm::BasicBlock* return_block;
+	llvm::Value* return_alloca;
+	ReturnType current_return_type;
+	bool return_called = false;
 };

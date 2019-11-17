@@ -16,6 +16,7 @@ using BuilderFunc = std::function<llvm::Value*(llvm::IRBuilder<>&, llvm::Value*,
 
 struct OpTable {
 	OpTable(std::initializer_list<std::pair<FuncType, BuilderFunc>> entries);
+	std::vector<std::vector<VarType>> valid_param_types() const;
 	static const OpTable& for_op(BinaryOp op);
 
 	std::vector<std::pair<FuncType, BuilderFunc>> entries;

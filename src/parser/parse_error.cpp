@@ -36,6 +36,24 @@ ParseError::ParseError(unsigned int line_num, unsigned int column_num, const std
 		+ unexpected_token.to_string();
 }
 
+ParseError::ParseError(unsigned int line_num, unsigned int column_num, const std::string& context, const std::string& expected_string, const Token& unexpected_token) noexcept :
+	line_num(line_num),
+	column_num(column_num),
+	context(context),
+	expected_string(expected_string),
+	unexpected_token(unexpected_token) {
+	this->err_string = std::string("parse error:\n\tline ")
+		+ std::to_string(this->line_num)
+		+ " column "
+		+ std::to_string(this->column_num)
+		+ ":\n\tin "
+		+ this->context
+		+ ":\n\texpected "
+		+ this->expected_string;
+		+ "\n\tinstead found the "
+		+ unexpected_token.to_string();
+}
+
 const char* ParseError::what() const noexcept {
 	return this->err_string.c_str();
 }

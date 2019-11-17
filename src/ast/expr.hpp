@@ -38,6 +38,7 @@ namespace expr {
 	unsigned int binary_op_precedence(BinaryOp op);
 	boost::optional<BinaryOp> binary_op_from_token_type(Token::Type type);
 	const char* binary_op_to_str(BinaryOp op);
+	const char* binary_op_symbol(BinaryOp op);
 
 	enum class UnaryOp {
 		Not,
@@ -51,18 +52,22 @@ namespace expr {
 	};
 
 	struct UnaryExpr : public Expr {
-		UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand) noexcept;
+		UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
 
 		UnaryOp op;
 		std::unique_ptr<Expr> operand;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct BinaryExpr : public Expr {
-		BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand) noexcept;
+		BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int line_num;
+		unsigned int column_num;
 
 		BinaryOp op;
 		std::unique_ptr<Expr> first_operand;
@@ -75,6 +80,8 @@ namespace expr {
 
 		std::string name;
 		std::unique_ptr<Expr> expr;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct IdentifierExpr : public Expr {

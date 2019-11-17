@@ -25,8 +25,8 @@ public:
 	std::forward_list<std::unique_ptr<Param>> parse_params();
 	std::forward_list<std::unique_ptr<Param>> parse_param_list();
 	std::unique_ptr<Param> parse_param();
-	std::string parse_identifier();
-	VarType parse_var_type();
+	std::string parse_identifier(const char* context);
+	VarType parse_var_type(const char* context);
 	std::unique_ptr<Statement> parse_expr_stmt();
 	std::unique_ptr<Statement> parse_if_stmt();
 	std::unique_ptr<Statement> parse_while_stmt();
@@ -46,7 +46,7 @@ public:
 	std::forward_list<std::unique_ptr<Expr>> parse_args();
 	std::forward_list<std::unique_ptr<Expr>> parse_arg_list();
 	ReturnType parse_return_type();
-	void consume(Token::Type expected_type);
+	void consume(Token::Type expected_type, const char* context, const char* expected);
 
 private:
 	TokenStream& ts;

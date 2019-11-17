@@ -47,6 +47,8 @@ namespace statement {
 
 	struct Return : public Statement {
 		std::unique_ptr<Expr> return_val; // potentially nullptr
+		unsigned int line_num;
+		unsigned int column_num;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;

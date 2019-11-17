@@ -7,14 +7,18 @@
 namespace ast {
 namespace expr {
 
-	UnaryExpr::UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand) noexcept :
+	UnaryExpr::UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept :
 		op(op),
-		operand(std::move(operand)) { }
+		operand(std::move(operand)),
+		line_num(line_num),
+		column_num(column_num) { }
 
-	BinaryExpr::BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand) noexcept :
+	BinaryExpr::BinaryExpr(BinaryOp op, std::unique_ptr<Expr> first_operand, std::unique_ptr<Expr> second_operand, unsigned int line_num, unsigned int column_num) noexcept :
 		op(op),
 		first_operand(std::move(first_operand)),
-		second_operand(std::move(second_operand)) { }
+		second_operand(std::move(second_operand)),
+		line_num(line_num),
+		column_num(column_num) { }
 
 	IdentifierExpr::IdentifierExpr(std::string&& name) noexcept :
 		name(std::move(name)) { }
@@ -121,6 +125,25 @@ namespace expr {
 			case BinaryOp::NotEquals: return "not_equal";
 			case BinaryOp::And: return "and";
 			case BinaryOp::Or: return "or";
+		}
+	}
+
+	const char* binary_op_symbol(BinaryOp op) {
+		switch (op) {
+			case BinaryOp::Multiply: return "*";
+			case BinaryOp::Divide: return "/";
+			case BinaryOp::Modulo: return "%";
+			case BinaryOp::Plus: return "+";
+			case BinaryOp::Minus: return "-";
+			case BinaryOp::Less: return "<";
+			case BinaryOp::LessEqual: return "<=";
+			case BinaryOp::Greater: return ">";
+			case BinaryOp::GreaterEqual: return ">=";
+			case BinaryOp::Equals: return "==";
+			case BinaryOp::NotEquals: return "!=";
+			case BinaryOp::And: return "&&";
+			case BinaryOp::Or: return "||";
+
 		}
 	}
 

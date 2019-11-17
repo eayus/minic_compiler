@@ -11,6 +11,7 @@ class ParseError : public std::exception {
 public:
 	ParseError(const std::string& err_string);
 	ParseError(unsigned int line_num, unsigned int column_num, const std::string& context, const std::string& expected_string, const std::vector<Token::Type> expected_types, const Token& unexpected_token) noexcept;
+	ParseError(unsigned int line_num, unsigned int column_num, const std::string& context, const std::string& expected_string, const Token& unexpected_token) noexcept;
 	const char* what() const noexcept override;
 
 private:

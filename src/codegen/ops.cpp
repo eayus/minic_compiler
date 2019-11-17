@@ -121,3 +121,14 @@ const OpTable& OpTable::for_op(BinaryOp op) {
 	}
 }
 
+std::vector<std::vector<VarType>> OpTable::valid_param_types() const {
+	std::vector<std::vector<VarType>> result;
+
+	for (auto& pair : this->entries) {
+		auto& func_type = pair.first;
+		result.push_back(func_type.param_types);
+	}
+
+	return result;
+}
+

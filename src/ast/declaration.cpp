@@ -129,7 +129,7 @@ namespace declaration {
 			<< "+- function { "
 			<< "name: " << this->name << ", "
 			<< "return_type: " << return_type_to_str(this->return_type)
-			<< "}\n";
+			<< " }\n";
 
 		indent_str += is_last ? "   " : "|  ";
 
