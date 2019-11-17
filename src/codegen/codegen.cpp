@@ -246,6 +246,14 @@ void CodeGenerator::visit_if_else_stmt(const IfElse& if_else_stmt) {
 
 	// Gen condition
 	if_else_stmt.cond->accept_visitor(*this);
+	VarType cond_type = this->get_current_expr_type(if_else_stmt.line_num, if_else_stmt.column_num, "as an if statement condition") ;
+	if (cond_type != VarType::Bool) {
+		throw TypeError(
+			if_else_stmt.line_num,
+			if_else_stmt.column_num,
+			std::string("if statement condition must be of type bool, but an expression of type ") + var_type_to_str(cond_type) + " was given"
+		);
+	}
 	this->builder.CreateCondBr(this->current_expr, if_true_block, if_false_block);
 
 	// Gen 'if_true'
@@ -298,6 +306,15 @@ void CodeGenerator::visit_while_stmt(const While& while_stmt) {
 	// Gen condition
 	this->builder.SetInsertPoint(cond_check_block);
 	while_stmt.cond->accept_visitor(*this);
+	VarType cond_type = this->get_current_expr_type(while_stmt.line_num, while_stmt.column_num, "as a while statement condition") ;
+	if (cond_type != VarType::Bool) {
+		throw TypeError(
+			while_stmt.line_num,
+			while_stmt.column_num,
+			std::string("while statement condition must be of type bool, but an expression of type ") + var_type_to_str(cond_type) + " was given"
+		);
+	}
+
 	this->builder.CreateCondBr(this->current_expr, body_block, cont_block);
 
 	// Gen body

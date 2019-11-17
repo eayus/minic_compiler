@@ -32,6 +32,8 @@ namespace statement {
 		std::unique_ptr<Expr> cond;
 		std::unique_ptr<Block> if_true;
 		std::unique_ptr<Block> if_false; // potentially nullptr
+		unsigned int line_num;
+		unsigned int column_num;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
@@ -40,6 +42,8 @@ namespace statement {
 	struct While : public Statement {
 		std::unique_ptr<Expr> cond;
 		std::unique_ptr<Statement> body;
+		unsigned int line_num;
+		unsigned int column_num;
 
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;

@@ -7,14 +7,6 @@
 namespace ast {
 namespace expr {
 
-	unsigned int Expr::get_line_num() {
-		return 0;
-	}
-
-	unsigned int Expr::get_column_num() {
-		return 0;
-	}
-
 	UnaryExpr::UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept :
 		op(op),
 		operand(std::move(operand)),
@@ -33,14 +25,20 @@ namespace expr {
 		line_num(line_num),
 		column_num(column_num) { }
 
-	IntExpr::IntExpr(int value) noexcept :
-		value(value) { }
+	IntExpr::IntExpr(int value, unsigned int line_num, unsigned int column_num) noexcept :
+		value(value),
+		line_num(line_num),
+		column_num(column_num) { }
 
-	FloatExpr::FloatExpr(float value) noexcept :
-		value(value) { }
+	FloatExpr::FloatExpr(float value, unsigned int line_num, unsigned int column_num) noexcept :
+		value(value),
+		line_num(line_num),
+		column_num(column_num) { }
 
-	BoolExpr::BoolExpr(bool value) noexcept :
-		value(value) { }
+	BoolExpr::BoolExpr(bool value, unsigned int line_num, unsigned int column_num) noexcept :
+		value(value),
+		line_num(line_num),
+		column_num(column_num) { }
 
 	std::vector<FuncType> binary_op_func_type(BinaryOp op) {
 		switch (op) {
@@ -274,6 +272,31 @@ namespace expr {
 	void BoolExpr::accept_visitor(ASTVisitor& visitor) {
 		visitor.visit_bool_expr(*this);
 	}
+	
+	
+	unsigned int UnaryExpr::get_line_num() { return this->line_num; }
+	unsigned int UnaryExpr::get_column_num() { return this->column_num; }
+
+	unsigned int BinaryExpr::get_line_num() { return this->line_num; }
+	unsigned int BinaryExpr::get_column_num() { return this->column_num; }
+
+	unsigned int AssignExpr::get_line_num() { return this->line_num; }
+	unsigned int AssignExpr::get_column_num() { return this->column_num; }
+
+	unsigned int IdentifierExpr::get_line_num() { return this->line_num; }
+	unsigned int IdentifierExpr::get_column_num() { return this->column_num; }
+
+	unsigned int FuncCallExpr::get_line_num() { return this->line_num; }
+	unsigned int FuncCallExpr::get_column_num() { return this->column_num; }
+
+	unsigned int IntExpr::get_line_num() { return this->line_num; }
+	unsigned int IntExpr::get_column_num() { return this->column_num; }
+
+	unsigned int FloatExpr::get_line_num() { return this->line_num; }
+	unsigned int FloatExpr::get_column_num() { return this->column_num; }
+
+	unsigned int BoolExpr::get_line_num() { return this->line_num; }
+	unsigned int BoolExpr::get_column_num() { return this->column_num; }
 
 }
 }

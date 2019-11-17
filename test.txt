@@ -1,3 +1,14 @@
+extern void foo(int x);
+
 void main() {
 	int x;
+	if (x == 2) {
+		return;
+	}
+
+	foo(foo(1));
+
+
+	while (true) {
+	}
 }

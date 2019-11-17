@@ -328,6 +328,8 @@ std::unique_ptr<Statement> Parser::parse_expr_stmt() {
 std::unique_ptr<Statement> Parser::parse_if_stmt() {
 	auto stmt = llvm::make_unique<IfElse>();
 
+	stmt->line_num = this->ts.current_line();
+	stmt->column_num = this->ts.current_column();
 	this->consume(Token::Type::If, "an if statement", "");
 	this->consume(Token::Type::LParen, "an if statement", "a \"(\" to mark the beginning of the conditional expression");
 	stmt->cond = this->parse_expr();
@@ -345,6 +347,8 @@ std::unique_ptr<Statement> Parser::parse_if_stmt() {
 std::unique_ptr<Statement> Parser::parse_while_stmt() {
 	auto stmt = llvm::make_unique<While>();
 
+	stmt->line_num = this->ts.current_line();
+	stmt->column_num = this->ts.current_column();
 	this->consume(Token::Type::While, "a while statement", "");
 	this->consume(Token::Type::LParen, "a while statement", "a \"(\" to mark the beginning of the conditional expression");
 	stmt->cond = this->parse_expr();
@@ -635,22 +639,28 @@ std::unique_ptr<Expr> Parser::parse_negate_expr() {
 }
 
 std::unique_ptr<Expr> Parser::parse_int_expr() {
+	auto line_num = this->ts.current_line();
+	auto column_num = this->ts.current_column();
 	int value = std::stoi(std::string(this->ts.next().lexeme));
-	return llvm::make_unique<IntExpr>(value);
+	return llvm::make_unique<IntExpr>(value, line_num, column_num);
 }
 
 std::unique_ptr<Expr> Parser::parse_float_expr() {
+	auto line_num = this->ts.current_line();
+	auto column_num = this->ts.current_column();
 	float value = std::stof(std::string(this->ts.next().lexeme));
-	return llvm::make_unique<FloatExpr>(value);
+	return llvm::make_unique<FloatExpr>(value, line_num, column_num);
 }
 
 std::unique_ptr<Expr> Parser::parse_bool_expr() {
+	auto line_num = this->ts.current_line();
+	auto column_num = this->ts.current_column();
 	auto s = this->ts.next().lexeme;
 	
 	if (s == boost::string_ref("true")) {
-		return llvm::make_unique<BoolExpr>(true);
+		return llvm::make_unique<BoolExpr>(true, line_num, column_num);
 	} else {
-		return llvm::make_unique<BoolExpr>(false);
+		return llvm::make_unique<BoolExpr>(false, line_num, column_num);
 	}
 }
 

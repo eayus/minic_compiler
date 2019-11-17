@@ -49,14 +49,16 @@ namespace expr {
 
 	struct Expr : public ASTNode {
 		virtual void print_tree(std::string indent_str, bool is_last) const override = 0;
-		unsigned int get_line_num();
-		unsigned int get_column_num();
+		virtual unsigned int get_line_num() = 0;
+		virtual unsigned int get_column_num() = 0;
 	};
 
 	struct UnaryExpr : public Expr {
 		UnaryExpr(UnaryOp op, std::unique_ptr<Expr> operand, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		UnaryOp op;
 		std::unique_ptr<Expr> operand;
@@ -70,6 +72,8 @@ namespace expr {
 		void accept_visitor(ASTVisitor& visitor) override;
 		unsigned int line_num;
 		unsigned int column_num;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		BinaryOp op;
 		std::unique_ptr<Expr> first_operand;
@@ -79,6 +83,8 @@ namespace expr {
 	struct AssignExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		std::string name;
 		std::unique_ptr<Expr> expr;
@@ -90,6 +96,8 @@ namespace expr {
 		IdentifierExpr(std::string&& name, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		std::string name;
 		unsigned int line_num;
@@ -99,6 +107,8 @@ namespace expr {
 	struct FuncCallExpr : public Expr {
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		std::string func_name;
 		std::forward_list<std::unique_ptr<Expr>> params;
@@ -107,27 +117,39 @@ namespace expr {
 	};
 
 	struct IntExpr : public Expr {
-		IntExpr(int value) noexcept;
+		IntExpr(int value, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		int value;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct FloatExpr : public Expr {
-		FloatExpr(float value) noexcept;
+		FloatExpr(float value, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		float value;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 	struct BoolExpr : public Expr {
-		BoolExpr(bool value) noexcept;
+		BoolExpr(bool value, unsigned int line_num, unsigned int column_num) noexcept;
 		void print_tree(std::string indent_str, bool is_last) const override;
 		void accept_visitor(ASTVisitor& visitor) override;
+		unsigned int get_line_num() override;
+		unsigned int get_column_num() override;
 
 		bool value;
+		unsigned int line_num;
+		unsigned int column_num;
 	};
 
 }
